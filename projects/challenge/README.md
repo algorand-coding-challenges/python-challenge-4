@@ -106,6 +106,7 @@ algokit project deploy localnet
 OR if you are on VSCode, hit F5 or go to the `Run and Debug` tab and run the debug script.
 
 If you see something like this in the console, you successfully fixed the bug! 😆
+<img width="1335" alt="image" src="https://github.com/algorand-coding-challenges/python-challenge-4/assets/52557585/f474cb65-0e24-4c03-98c8-18295b1be2ab">
 
 
 **😰 Are you struggling?**
