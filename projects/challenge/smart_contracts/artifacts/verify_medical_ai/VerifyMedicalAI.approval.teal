@@ -1,0 +1,251 @@
+#pragma version 10
+
+smart_contracts.verify_medical_ai.contract.VerifyMedicalAI.approval_program:
+    // smart_contracts/verify_medical_ai/contract.py:13
+    // class VerifyMedicalAI(ARC4Contract):
+    txn NumAppArgs
+    bz main_bare_routing@6
+    method "record_ai_info(string,string,string,uint64,bool,bool)void"
+    method "get_ai_info()(string,string,string,uint64,bool,bool)"
+    txna ApplicationArgs 0
+    match main_record_ai_info_route@2 main_get_ai_info_route@3
+    err // reject transaction
+
+main_record_ai_info_route@2:
+    // smart_contracts/verify_medical_ai/contract.py:28
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is NoOp
+    txn ApplicationID
+    assert // is not creating
+    // smart_contracts/verify_medical_ai/contract.py:13
+    // class VerifyMedicalAI(ARC4Contract):
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    txna ApplicationArgs 3
+    extract 2 0
+    txna ApplicationArgs 4
+    btoi
+    txna ApplicationArgs 5
+    int 0
+    getbit
+    txna ApplicationArgs 6
+    int 0
+    getbit
+    // smart_contracts/verify_medical_ai/contract.py:28
+    // @arc4.abimethod()
+    callsub record_ai_info
+    int 1
+    return
+
+main_get_ai_info_route@3:
+    // smart_contracts/verify_medical_ai/contract.py:47
+    // @arc4.abimethod(readonly=True)
+    txn OnCompletion
+    !
+    assert // OnCompletion is NoOp
+    txn ApplicationID
+    assert // is not creating
+    callsub get_ai_info
+    byte 0x151f7c75
+    swap
+    concat
+    log
+    int 1
+    return
+
+main_bare_routing@6:
+    // smart_contracts/verify_medical_ai/contract.py:13
+    // class VerifyMedicalAI(ARC4Contract):
+    txn OnCompletion
+    switch main_create@7 main_opt_in@8
+    err // reject transaction
+
+main_create@7:
+    // smart_contracts/verify_medical_ai/contract.py:13
+    // class VerifyMedicalAI(ARC4Contract):
+    txn ApplicationID
+    !
+    assert // is creating
+    int 1
+    return
+
+main_opt_in@8:
+    // smart_contracts/verify_medical_ai/contract.py:17
+    // @arc4.baremethod(allow_actions=["OptIn"])
+    txn ApplicationID
+    assert // is not creating
+    // smart_contracts/verify_medical_ai/contract.py:17-18
+    // @arc4.baremethod(allow_actions=["OptIn"])
+    // def opt_in(self) -> None:
+    callsub opt_in
+    int 1
+    return
+
+
+// smart_contracts.verify_medical_ai.contract.VerifyMedicalAI.record_ai_info(name: bytes, used_model: bytes, medical_degree: bytes, mcat_score: uint64, residency_training: uint64, medical_license: uint64) -> void:
+record_ai_info:
+    // smart_contracts/verify_medical_ai/contract.py:28-37
+    // @arc4.abimethod()
+    // def record_ai_info(
+    //     self,
+    //     name: String,
+    //     used_model: String,
+    //     medical_degree: String,
+    //     mcat_score: UInt64,
+    //     residency_training: bool,
+    //     medical_license: bool,
+    // ) -> None:
+    proto 6 0
+    // smart_contracts/verify_medical_ai/contract.py:39
+    // name=arc4.String(name),
+    frame_dig -6
+    len
+    itob
+    extract 6 2
+    frame_dig -6
+    concat
+    // smart_contracts/verify_medical_ai/contract.py:40
+    // used_model=arc4.String(used_model),
+    frame_dig -5
+    len
+    itob
+    extract 6 2
+    frame_dig -5
+    concat
+    swap
+    // smart_contracts/verify_medical_ai/contract.py:41
+    // medical_degree=arc4.String(medical_degree),
+    frame_dig -4
+    len
+    itob
+    extract 6 2
+    frame_dig -4
+    concat
+    cover 2
+    // smart_contracts/verify_medical_ai/contract.py:42
+    // mcat_score=arc4.UInt64(mcat_score),
+    frame_dig -3
+    itob
+    cover 2
+    // smart_contracts/verify_medical_ai/contract.py:43
+    // residency_training=arc4.Bool(residency_training),
+    byte 0x00
+    int 0
+    frame_dig -2
+    setbit
+    cover 2
+    // smart_contracts/verify_medical_ai/contract.py:44
+    // medical_license=arc4.Bool(medical_license),
+    byte 0x00
+    int 0
+    frame_dig -1
+    setbit
+    swap
+    // smart_contracts/verify_medical_ai/contract.py:38-45
+    // self.ai_info[Txn.sender] = AiInfo(
+    //     name=arc4.String(name),
+    //     used_model=arc4.String(used_model),
+    //     medical_degree=arc4.String(medical_degree),
+    //     mcat_score=arc4.UInt64(mcat_score),
+    //     residency_training=arc4.Bool(residency_training),
+    //     medical_license=arc4.Bool(medical_license),
+    // )
+    dup
+    len
+    int 15
+    +
+    dup
+    itob
+    extract 6 2
+    byte 0x000f
+    swap
+    concat
+    swap
+    dig 4
+    len
+    +
+    itob
+    extract 6 2
+    concat
+    uncover 5
+    concat
+    uncover 4
+    concat
+    uncover 2
+    int 0
+    getbit
+    int 113
+    swap
+    setbit
+    swap
+    concat
+    swap
+    concat
+    swap
+    concat
+    // smart_contracts/verify_medical_ai/contract.py:38
+    // self.ai_info[Txn.sender] = AiInfo(
+    txn Sender
+    byte "ai_info"
+    // smart_contracts/verify_medical_ai/contract.py:38-45
+    // self.ai_info[Txn.sender] = AiInfo(
+    //     name=arc4.String(name),
+    //     used_model=arc4.String(used_model),
+    //     medical_degree=arc4.String(medical_degree),
+    //     mcat_score=arc4.UInt64(mcat_score),
+    //     residency_training=arc4.Bool(residency_training),
+    //     medical_license=arc4.Bool(medical_license),
+    // )
+    uncover 2
+    app_local_put
+    retsub
+
+
+// smart_contracts.verify_medical_ai.contract.VerifyMedicalAI.get_ai_info() -> bytes:
+get_ai_info:
+    // smart_contracts/verify_medical_ai/contract.py:47-48
+    // @arc4.abimethod(readonly=True)
+    // def get_ai_info(self) -> AiInfo:
+    proto 0 1
+    // smart_contracts/verify_medical_ai/contract.py:49
+    // assert op.app_opted_in(Txn.sender, Global.current_application_id)
+    txn Sender
+    global CurrentApplicationID
+    app_opted_in
+    assert
+    // smart_contracts/verify_medical_ai/contract.py:50
+    // return self.ai_info[Txn.sender]
+    txn Sender
+    int 0
+    byte "ai_info"
+    app_local_get_ex
+    assert // check ai_info exists for account
+    retsub
+
+
+// smart_contracts.verify_medical_ai.contract.VerifyMedicalAI.opt_in() -> void:
+opt_in:
+    // smart_contracts/verify_medical_ai/contract.py:17-18
+    // @arc4.baremethod(allow_actions=["OptIn"])
+    // def opt_in(self) -> None:
+    proto 0 0
+    // smart_contracts/verify_medical_ai/contract.py:19
+    // self.ai_info[Txn.sender] = AiInfo(
+    txn Sender
+    byte "ai_info"
+    // smart_contracts/verify_medical_ai/contract.py:19-26
+    // self.ai_info[Txn.sender] = AiInfo(
+    //     name=arc4.String(""),
+    //     used_model=arc4.String(""),
+    //     medical_degree=arc4.String(""),
+    //     mcat_score=arc4.UInt64(0),
+    //     residency_training=arc4.Bool(False),
+    //     medical_license=arc4.Bool(False),
+    // )
+    byte 0x000f00110013000000000000000000000000000000
+    app_local_put
+    retsub
