@@ -28,12 +28,12 @@ class VerifyMedicalAI(ARC4Contract):
     @arc4.abimethod()
     def record_ai_info(
         self,
-        name: str,
-        used_model: str,
-        medical_degree: str,
-        mcat_score: UInt64,
-        residency_training: bool,
-        medical_license: bool,
+        name: arc4.String,
+        used_model: arc4.String,
+        medical_degree: arc4.String,
+        mcat_score: arc4.UInt64,
+        residency_training: arc4.Bool,
+        medical_license: arc4.Bool,
     ) -> None:
         self.ai_info[Txn.sender] = AiInfo(
             name=name,
