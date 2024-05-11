@@ -1,0 +1,7 @@
+#pragma version 10
+
+smart_contracts.verify_medical_ai.contract.VerifyMedicalAI.clear_state_program:
+    // smart_contracts/verify_medical_ai/contract.py:13
+    // class VerifyMedicalAI(ARC4Contract):
+    int 1
+    return
